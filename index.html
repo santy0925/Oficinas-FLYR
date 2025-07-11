@@ -1,11 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oficinas</title>
+    <title>Gestor de Equipos de Oficina</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Gestor de Equipos de Oficina</h1>
+            <div class="current-date">
+                📅 <span id="currentDate"></span>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSeats">0</div>
+                <div class="stat-label">Total de Puestos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="availableSeats">0</div>
+                <div class="stat-label">Puestos Disponibles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="todayEquipment">0</div>
+                <div class="stat-label">Equipos Hoy</div>
+            </div>
+        </div>
+
+        <div class="section today-equipment-section">
+            <h2>📋 Equipos Programados para Hoy (<span id="todayEquipmentDetail">0</span>)</h2>
+            <div id="todayEquipmentList"></div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ Gestión de Oficinas</h2>
+            <div class="office-controls">
+                <div class="office-section">
+                    <h3>🏢 Oficina 1</h3>
+                    <div class="form-group">
+                        <label>Número de Puestos:</label>
+                        <input type="number" id="office1Seats" min="0" onchange="updateSeats(1)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Equipo:</label>
+                        <input type="text" id="office1Name" placeholder="Ej: Laptop Dell">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha:</label>
+                        <input type="date" id="office1Date">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select id="office1Status">
+                            <option value="presente">Presente</option>
+                            <option value="ausente">Ausente</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addEquipment(1)">➕ Agregar Equipo</button>
+                </div>
+
+                <div class="office-section">
+                    <h3>🏢 Oficina 2</h3>
+                    <div class="form-group">
+                        <label>Número de Puestos:</label>
+                        <input type="number" id="office2Seats" min="0" onchange="updateSeats(2)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Equipo:</label>
+                        <input type="text" id="office2Name" placeholder="Ej: Monitor Samsung">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha:</label>
+                        <input type="date" id="office2Date">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select id="office2Status">
+                            <option value="presente">Presente</option>
+                            <option value="ausente">Ausente</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addEquipment(2)">➕ Agregar Equipo</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📦 Equipos por Oficina</h2>
+            <div class="office-controls">
+                <div class="office-section">
+                    <h3>🏢 Oficina 1 - Equipos</h3>
+                    <div id="office1Equipment"></div>
+                </div>
+
+                <div class="office-section">
+                    <h3>🏢 Oficina 2 - Equipos</h3>
+                    <div id="office2Equipment"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
