@@ -10,46 +10,62 @@
     <div class="container">
         <div class="header">
             <h1>🏢 Gestor de Equipos de Oficina</h1>
-            <div class="current-date">
-                📅 <span id="currentDate"></span>
-            </div>
+            <div class="date-display" id="currentDate"></div>
         </div>
 
-        <div class="stats">
+        <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value" id="totalSeats">0</div>
-                <div class="stat-label">Total de Puestos</div>
+                <div class="stat-number" id="totalOffices">2</div>
+                <div class="stat-label">Total Oficinas</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="availableSeats">0</div>
+                <div class="stat-number" id="totalSeats">0</div>
+                <div class="stat-label">Total Asientos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="availableSeats">0</div>
                 <div class="stat-label">Puestos Disponibles</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="todayEquipment">0</div>
+                <div class="stat-number" id="todayEquipment">0</div>
                 <div class="stat-label">Equipos Hoy</div>
             </div>
         </div>
 
-        <div class="section today-equipment-section">
-            <h2>📋 Equipos Programados para Hoy (<span id="todayEquipmentDetail">0</span>)</h2>
-            <div id="todayEquipmentList"></div>
-        </div>
+        <div class="main-content">
+            <!-- Sección de equipos del día actual -->
+            <div class="office-section" style="background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border: 2px solid #27ae60;">
+                <div class="office-header">
+                    <h2 class="office-title">📅 Equipos Programados para Hoy</h2>
+                    <div class="stat-number" style="color: #27ae60;" id="todayEquipmentDetail">0</div>
+                </div>
+                <div class="equipment-grid" id="todayEquipmentList">
+                    <!-- Los equipos de hoy se mostrarán aquí -->
+                </div>
+            </div>
 
-        <div class="section">
-            <h2>⚙️ Gestión de Oficinas</h2>
-            <div class="office-controls">
-                <div class="office-section">
-                    <h3>🏢 Oficina 1</h3>
-                    <div class="form-group">
-                        <label>Número de Puestos:</label>
-                        <input type="number" id="office1Seats" min="0" onchange="updateSeats(1)">
+            <!-- Oficina 1 -->
+            <div class="office-section">
+                <div class="office-header">
+                    <h2 class="office-title">🏢 Oficina 1</h2>
+                    <div class="fixed-seats">
+                        <label>Puestos fijos:</label>
+                        <input type="number" id="office1Seats" min="0" value="10" onchange="updateSeats(1)">
                     </div>
+                </div>
+
+                <div class="equipment-grid" id="office1Equipment">
+                    <!-- Equipos de la oficina 1 se mostrarán aquí -->
+                </div>
+
+                <div class="add-equipment-form">
+                    <h3>➕ Agregar Nuevo Equipo</h3>
                     <div class="form-group">
                         <label>Nombre del Equipo:</label>
-                        <input type="text" id="office1Name" placeholder="Ej: Laptop Dell">
+                        <input type="text" id="office1Name" placeholder="Ej: Laptop HP">
                     </div>
                     <div class="form-group">
-                        <label>Fecha:</label>
+                        <label>Fecha de Presentación:</label>
                         <input type="date" id="office1Date">
                     </div>
                     <div class="form-group">
@@ -59,21 +75,32 @@
                             <option value="ausente">Ausente</option>
                         </select>
                     </div>
-                    <button class="btn" onclick="addEquipment(1)">➕ Agregar Equipo</button>
+                    <button class="btn" onclick="addEquipment(1)">Agregar Equipo</button>
+                </div>
+            </div>
+
+            <!-- Oficina 2 -->
+            <div class="office-section">
+                <div class="office-header">
+                    <h2 class="office-title">🏢 Oficina 2</h2>
+                    <div class="fixed-seats">
+                        <label>Puestos fijos:</label>
+                        <input type="number" id="office2Seats" min="0" value="8" onchange="updateSeats(2)">
+                    </div>
                 </div>
 
-                <div class="office-section">
-                    <h3>🏢 Oficina 2</h3>
-                    <div class="form-group">
-                        <label>Número de Puestos:</label>
-                        <input type="number" id="office2Seats" min="0" onchange="updateSeats(2)">
-                    </div>
+                <div class="equipment-grid" id="office2Equipment">
+                    <!-- Equipos de la oficina 2 se mostrarán aquí -->
+                </div>
+
+                <div class="add-equipment-form">
+                    <h3>➕ Agregar Nuevo Equipo</h3>
                     <div class="form-group">
                         <label>Nombre del Equipo:</label>
                         <input type="text" id="office2Name" placeholder="Ej: Monitor Samsung">
                     </div>
                     <div class="form-group">
-                        <label>Fecha:</label>
+                        <label>Fecha de Presentación:</label>
                         <input type="date" id="office2Date">
                     </div>
                     <div class="form-group">
@@ -83,22 +110,7 @@
                             <option value="ausente">Ausente</option>
                         </select>
                     </div>
-                    <button class="btn" onclick="addEquipment(2)">➕ Agregar Equipo</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>📦 Equipos por Oficina</h2>
-            <div class="office-controls">
-                <div class="office-section">
-                    <h3>🏢 Oficina 1 - Equipos</h3>
-                    <div id="office1Equipment"></div>
-                </div>
-
-                <div class="office-section">
-                    <h3>🏢 Oficina 2 - Equipos</h3>
-                    <div id="office2Equipment"></div>
+                    <button class="btn" onclick="addEquipment(2)">Agregar Equipo</button>
                 </div>
             </div>
         </div>
