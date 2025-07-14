@@ -49,7 +49,8 @@ function updateStats() {
         if (equipment.date === today) {
             todayEquipmentCount++;
             if (equipment.status === 'presente') {
-                occupiedSeats++;
+                // Modified: Add the number of people to occupied seats
+                occupiedSeats += equipment.people || 0; // Use 0 if people is undefined
             }
         }
     });
@@ -77,7 +78,7 @@ function renderTodayEquipment() {
                 todayEquipments.push({
                     ...item,
                     office: officeNum
-                });         
+                });
             }
         });
     });
@@ -104,6 +105,7 @@ function renderTodayEquipment() {
             <div class="status-badge status-${item.status}">
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
+            ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
             <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">
                 📅 Programado para hoy
             </div>
@@ -139,6 +141,10 @@ function renderOfficeEquipment(officeNum) {
                     <option value="ausente" ${item.status === 'ausente' ? 'selected' : ''}>Ausente</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label>Personas:</label>
+                <input type="number" min="0" value="${item.people || ''}" onchange="updateEquipmentPeople(${officeNum}, ${item.id}, this.value)">
+            </div>
             <div class="status-badge status-${item.status}">
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
@@ -152,9 +158,11 @@ function addEquipment(officeNum) {
     const name = document.getElementById(`office${officeNum}Name`).value.trim();
     const date = document.getElementById(`office${officeNum}Date`).value;
     const status = document.getElementById(`office${officeNum}Status`).value;
+    // New: Get the number of people
+    const people = parseInt(document.getElementById(`office${officeNum}People`).value) || 0;
 
     if (!name || !date) {
-        alert('Por favor, completa todos los campos.');
+        alert('Por favor, completa los campos de Nombre y Fecha.');
         return;
     }
 
@@ -162,7 +170,8 @@ function addEquipment(officeNum) {
         id: equipmentIdCounter++,
         name: name,
         date: date,
-        status: status
+        status: status,
+        people: people // New: Include people in the new equipment object
     };
 
     officeData[`office${officeNum}`].equipment.push(newEquipment);
@@ -170,6 +179,7 @@ function addEquipment(officeNum) {
     document.getElementById(`office${officeNum}Name`).value = '';
     document.getElementById(`office${officeNum}Date`).value = '';
     document.getElementById(`office${officeNum}Status`).value = 'presente';
+    document.getElementById(`office${officeNum}People`).value = ''; // Clear people input
 
     saveData();
     renderOfficeEquipment(officeNum);
@@ -204,6 +214,18 @@ function updateEquipmentStatus(officeNum, equipmentId, newStatus) {
     const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
     if (equipment) {
         equipment.status = newStatus;
+        saveData();
+        renderOfficeEquipment(officeNum);
+        renderTodayEquipment();
+        updateStats();
+    }
+}
+
+// New function: Update the number of people for an equipment item
+function updateEquipmentPeople(officeNum, equipmentId, newPeople) {
+    const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
+    if (equipment) {
+        equipment.people = parseInt(newPeople) || 0; // Ensure it's a number, default to 0
         saveData();
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
