@@ -77,7 +77,7 @@ function renderTodayEquipment() {
                 todayEquipments.push({
                     ...item,
                     office: officeNum
-                });
+                });         
             }
         });
     });
