@@ -99,7 +99,18 @@ body {
     align-items: center;
     gap: 10px;
 }
-
+.fixed-seats label {
+    font-weight: bold;
+    color: #555;    
+}
+.fixed-seats input {
+    width: 80px;
+    padding: 8px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.1em;
+}
 .fixed-seats input {
     width: 80px;
     padding: 8px;
@@ -238,5 +249,20 @@ body {
     
     .equipment-grid {
         grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 2em;
+    }
+    .stat-number {
+        font-size: 2em;
+    }
+    .stat-label {
+        font-size: 1em;
+    }
+    .btn {
+        width: 100%;
+        padding: 10px;
     }
 }

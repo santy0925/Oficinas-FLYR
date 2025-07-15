@@ -49,8 +49,7 @@ function updateStats() {
         if (equipment.date === today) {
             todayEquipmentCount++;
             if (equipment.status === 'presente') {
-                // Modified: Add the number of people to occupied seats
-                occupiedSeats += equipment.people || 0; // Use 0 if people is undefined
+                occupiedSeats += equipment.people || 0; 
             }
         }
     });
@@ -158,7 +157,7 @@ function addEquipment(officeNum) {
     const name = document.getElementById(`office${officeNum}Name`).value.trim();
     const date = document.getElementById(`office${officeNum}Date`).value;
     const status = document.getElementById(`office${officeNum}Status`).value;
-    // New: Get the number of people
+   
     const people = parseInt(document.getElementById(`office${officeNum}People`).value) || 0;
 
     if (!name || !date) {
@@ -171,7 +170,7 @@ function addEquipment(officeNum) {
         name: name,
         date: date,
         status: status,
-        people: people // New: Include people in the new equipment object
+        people: people 
     };
 
     officeData[`office${officeNum}`].equipment.push(newEquipment);
@@ -179,7 +178,7 @@ function addEquipment(officeNum) {
     document.getElementById(`office${officeNum}Name`).value = '';
     document.getElementById(`office${officeNum}Date`).value = '';
     document.getElementById(`office${officeNum}Status`).value = 'presente';
-    document.getElementById(`office${officeNum}People`).value = ''; // Clear people input
+    document.getElementById(`office${officeNum}People`).value = ''; 
 
     saveData();
     renderOfficeEquipment(officeNum);
@@ -221,11 +220,11 @@ function updateEquipmentStatus(officeNum, equipmentId, newStatus) {
     }
 }
 
-// New function: Update the number of people for an equipment item
+
 function updateEquipmentPeople(officeNum, equipmentId, newPeople) {
     const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
     if (equipment) {
-        equipment.people = parseInt(newPeople) || 0; // Ensure it's a number, default to 0
+        equipment.people = parseInt(newPeople) || 0;
         saveData();
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
