@@ -1,131 +1,131 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Gestor de Equipos de Oficina</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏢 Gestor de Equipos de Oficina</h1>
-            <div class="date-display" id="currentDate"></div>
+<div class="container">
+    <div class="header">
+        <h1>🏢 Gestor de Equipos de Oficina</h1>
+        <div class="date-display" id="currentDate"></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" id="totalOffices">2</div>
+            <div class="stat-label">Total Oficinas</div>
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalOffices">2</div>
-                <div class="stat-label">Total Oficinas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalSeats">0</div>
-                <div class="stat-label">Total Asientos</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="availableSeats">0</div>
-                <div class="stat-label">Puestos Disponibles</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="todayEquipment">0</div>
-                <div class="stat-label">Equipos Hoy</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-number" id="totalSeats">0</div>
+            <div class="stat-label">Total Asientos</div>
         </div>
-
-        <div class="main-content">
-            <!-- Sección de equipos del día actual -->
-            <div class="office-section" style="background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border: 2px solid #27ae60;">
-                <div class="office-header">
-                    <h2 class="office-title"> Equipos Programados para Hoy</h2>
-                    <div class="stat-number" style="color: #27ae60;" id="todayEquipmentDetail">0</div>
-                </div>
-                <div class="equipment-grid" id="todayEquipmentList">
-                    <!-- Los equipos de hoy se mostrarán aquí -->
-                </div>
-            </div>
-
-            <!-- Oficina 1 -->
-            <div class="office-section">
-                <div class="office-header">
-                    <h2 class="office-title">🏢 Oficina 701</h2>
-                    <div class="fixed-seats">
-                        <label>Puestos:</label>
-                        <input type="number" id="office1Seats" min="0" value="10" onchange="updateSeats(1)">
-                    </div>
-                </div>
-
-                <div class="equipment-grid" id="office1Equipment">
-                    <!-- Equipos de la oficina 1 se mostrarán aquí -->
-                </div>
-
-                <div class="add-equipment-form">
-                    <h3>➕ Agregar Nuevo Equipo</h3>
-                    <div class="form-group">
-                        <label>Nombre del Equipo:</label>
-                        <input type="text" id="office1Name" placeholder="Ej: ...">
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Presentación:</label>
-                        <input type="date" id="office1Date">
-                    </div>
-                    <div class="form-group">
-                        <label>Estado:</label>
-                        <select id="office1Status">
-                            <option value="presente">Presente</option>
-                            <option value="ausente">Ausente</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-    <label for="office1People">Número de Personas:</label>
-    <input type="number" id="office1People" min="0" value="1">
-</div>
-
-
-                    <button class="btn" onclick="addEquipment(1)">Agregar Equipo</button>
-                </div>
-            </div>
-
-            <!-- Oficina 2 -->
-            <div class="office-section">
-                <div class="office-header">
-                    <h2 class="office-title">🏢 Oficina 702</h2>
-                    <div class="fixed-seats">
-                        <label>Puestos:</label>
-                        <input type="number" id="office2Seats" min="0" value="8" onchange="updateSeats(2)">
-                    </div>
-                </div>
-
-                <div class="equipment-grid" id="office2Equipment">
-                    <!-- Equipos de la oficina 2 se mostrarán aquí -->
-                </div>
-
-                <div class="add-equipment-form">
-                    <h3>➕ Agregar Nuevo Equipo</h3>
-                    <div class="form-group">
-                        <label>Nombre del Equipo:</label>
-                        <input type="text" id="office2Name" placeholder="Ej: ...">
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Presentación:</label>
-                        <input type="date" id="office2Date">
-                    </div>
-                    <div class="form-group">
-                        <label>Estado:</label>
-                        <select id="office2Status">
-                            <option value="presente">Presente</option>
-                            <option value="ausente">Ausente</option>
-                        </select>
-                        <div class="form-group">
-                            <label for="office2People">Número de Personas:</label>
-                            <input type="number" id="office2People" min="0" value="1">
-                        </div>
-                    </div>
-                    <button class="btn" onclick="addEquipment(2)">Agregar Equipo</button>
-                </div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-number" id="availableSeats">0</div>
+            <div class="stat-label">Puestos Disponibles</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="todayEquipment">0</div>
+            <div class="stat-label">Equipos Hoy</div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="main-content">
+        <!-- Equipos de hoy -->
+        <div class="office-section" style="background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border: 2px solid #27ae60;">
+            <div class="office-header">
+                <h2 class="office-title"> Equipos Programados para Hoy</h2>
+                <div class="stat-number" style="color: #27ae60;" id="todayEquipmentDetail">0</div>
+            </div>
+            <div class="equipment-grid" id="todayEquipmentList"></div>
+        </div>
+
+        <!-- Oficina 701 -->
+        <div class="office-section">
+            <div class="office-header">
+                <h2 class="office-title">🏢 Oficina 701</h2>
+                <div class="fixed-seats">
+                    <label>Puestos Rotativos:</label>
+                    <input type="number" id="office1Seats" min="0" value="10" onchange="updateSeats(1)">
+                </div>
+                <div class="fixed-seats">
+                    <label>Puestos Fijos:</label>
+                    <input type="number" id="office1FixedSeats" min="0" value="2" onchange="updateFixedSeats(1)">
+                </div>
+            </div>
+
+            <div class="equipment-grid" id="office1Equipment"></div>
+
+            <div class="add-equipment-form">
+                <h3>➕ Agregar Nuevo Equipo</h3>
+                <div class="form-group">
+                    <label>Nombre del Equipo:</label>
+                    <input type="text" id="office1Name" placeholder="Ej: ...">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de Presentación:</label>
+                    <input type="date" id="office1Date">
+                </div>
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select id="office1Status">
+                        <option value="presente">Presente</option>
+                        <option value="ausente">Ausente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="office1People">Número de Personas:</label>
+                    <input type="number" id="office1People" min="0" value="1">
+                </div>
+                <button class="btn" onclick="addEquipment(1)">Agregar Equipo</button>
+            </div>
+        </div>
+
+        <!-- Oficina 702 -->
+        <div class="office-section">
+            <div class="office-header">
+                <h2 class="office-title">🏢 Oficina 702</h2>
+                <div class="fixed-seats">
+                    <label>Puestos Rotativos:</label>
+                    <input type="number" id="office2Seats" min="0" value="8" onchange="updateSeats(2)">
+                </div>
+                <div class="fixed-seats">
+                    <label>Puestos Fijos:</label>
+                    <input type="number" id="office2FixedSeats" min="0" value="2" onchange="updateFixedSeats(2)">
+                </div>
+            </div>
+
+            <div class="equipment-grid" id="office2Equipment"></div>
+
+            <div class="add-equipment-form">
+                <h3>➕ Agregar Nuevo Equipo</h3>
+                <div class="form-group">
+                    <label>Nombre del Equipo:</label>
+                    <input type="text" id="office2Name" placeholder="Ej: ...">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de Presentación:</label>
+                    <input type="date" id="office2Date">
+                </div>
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select id="office2Status">
+                        <option value="presente">Presente</option>
+                        <option value="ausente">Ausente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="office2People">Número de Personas:</label>
+                    <input type="number" id="office2People" min="0" value="1">
+                </div>
+                <button class="btn" onclick="addEquipment(2)">Agregar Equipo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,20 +1,20 @@
-// Datos en memoria (en un entorno real, usar localStorage)
 const today = new Date().toISOString().split('T')[0];
 
 let officeData = {
     office1: {
         seats: 10,
+        fixedSeats: 2,
         equipment: []
     },
     office2: {
         seats: 8,
+        fixedSeats: 2,
         equipment: []
     }
 };
 
-let equipmentIdCounter = 6;
+let equipmentIdCounter = 1;
 
-// Función para cargar datos desde localStorage
 function loadData() {
     const saved = localStorage.getItem('officeData');
     if (saved) {
@@ -26,7 +26,6 @@ function loadData() {
     }
 }
 
-// Función para guardar datos en localStorage
 function saveData() {
     localStorage.setItem('officeData', JSON.stringify(officeData));
     localStorage.setItem('equipmentIdCounter', equipmentIdCounter.toString());
@@ -41,15 +40,21 @@ function updateCurrentDate() {
 
 function updateStats() {
     const today = new Date().toISOString().split('T')[0];
-    let totalSeats = officeData.office1.seats + officeData.office2.seats;
+    const office1 = officeData.office1;
+    const office2 = officeData.office2;
+
+    const totalSeats =
+        (office1.seats + (office1.fixedSeats || 0)) +
+        (office2.seats + (office2.fixedSeats || 0));
+
     let occupiedSeats = 0;
     let todayEquipmentCount = 0;
 
-    [...officeData.office1.equipment, ...officeData.office2.equipment].forEach(equipment => {
+    [...office1.equipment, ...office2.equipment].forEach(equipment => {
         if (equipment.date === today) {
             todayEquipmentCount++;
             if (equipment.status === 'presente') {
-                occupiedSeats += equipment.people || 0; 
+                occupiedSeats += equipment.people || 0;
             }
         }
     });
@@ -66,6 +71,13 @@ function updateSeats(officeNum) {
     updateStats();
 }
 
+function updateFixedSeats(officeNum) {
+    const fixedSeats = parseInt(document.getElementById(`office${officeNum}FixedSeats`).value) || 0;
+    officeData[`office${officeNum}`].fixedSeats = fixedSeats;
+    saveData();
+    updateStats();
+}
+
 function renderTodayEquipment() {
     const today = new Date().toISOString().split('T')[0];
     const container = document.getElementById('todayEquipmentList');
@@ -74,10 +86,7 @@ function renderTodayEquipment() {
     [1, 2].forEach(officeNum => {
         officeData[`office${officeNum}`].equipment.forEach(item => {
             if (item.date === today) {
-                todayEquipments.push({
-                    ...item,
-                    office: officeNum
-                });
+                todayEquipments.push({ ...item, office: officeNum });
             }
         });
     });
@@ -93,21 +102,16 @@ function renderTodayEquipment() {
     todayEquipments.forEach(item => {
         const card = document.createElement('div');
         card.className = 'equipment-card today-equipment';
-
         card.innerHTML = `
             <div class="equipment-header">
                 <div class="equipment-name">${item.name}</div>
-                <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">
-                    Oficina ${item.office}
-                </span>
+                <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
             </div>
             <div class="status-badge status-${item.status}">
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">
-                📅 Programado para hoy
-            </div>
+            <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">📅 Programado para hoy</div>
         `;
         container.appendChild(card);
     });
@@ -123,7 +127,6 @@ function renderOfficeEquipment(officeNum) {
         const isToday = item.date === today;
         const card = document.createElement('div');
         card.className = `equipment-card ${isToday ? 'today-equipment' : ''}`;
-
         card.innerHTML = `
             <div class="equipment-header">
                 <div class="equipment-name">${item.name}</div>
@@ -157,7 +160,6 @@ function addEquipment(officeNum) {
     const name = document.getElementById(`office${officeNum}Name`).value.trim();
     const date = document.getElementById(`office${officeNum}Date`).value;
     const status = document.getElementById(`office${officeNum}Status`).value;
-   
     const people = parseInt(document.getElementById(`office${officeNum}People`).value) || 0;
 
     if (!name || !date) {
@@ -167,10 +169,10 @@ function addEquipment(officeNum) {
 
     const newEquipment = {
         id: equipmentIdCounter++,
-        name: name,
-        date: date,
-        status: status,
-        people: people 
+        name,
+        date,
+        status,
+        people
     };
 
     officeData[`office${officeNum}`].equipment.push(newEquipment);
@@ -178,7 +180,7 @@ function addEquipment(officeNum) {
     document.getElementById(`office${officeNum}Name`).value = '';
     document.getElementById(`office${officeNum}Date`).value = '';
     document.getElementById(`office${officeNum}Status`).value = 'presente';
-    document.getElementById(`office${officeNum}People`).value = ''; 
+    document.getElementById(`office${officeNum}People`).value = '';
 
     saveData();
     renderOfficeEquipment(officeNum);
@@ -188,9 +190,7 @@ function addEquipment(officeNum) {
 
 function deleteEquipment(officeNum, equipmentId) {
     if (confirm('¿Estás seguro de que quieres eliminar este equipo?')) {
-        officeData[`office${officeNum}`].equipment =
-            officeData[`office${officeNum}`].equipment.filter(item => item.id !== equipmentId);
-
+        officeData[`office${officeNum}`].equipment = officeData[`office${officeNum}`].equipment.filter(item => item.id !== equipmentId);
         saveData();
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
@@ -220,7 +220,6 @@ function updateEquipmentStatus(officeNum, equipmentId, newStatus) {
     }
 }
 
-
 function updateEquipmentPeople(officeNum, equipmentId, newPeople) {
     const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
     if (equipment) {
@@ -238,6 +237,8 @@ function init() {
 
     document.getElementById('office1Seats').value = officeData.office1.seats;
     document.getElementById('office2Seats').value = officeData.office2.seats;
+    document.getElementById('office1FixedSeats').value = officeData.office1.fixedSeats || 0;
+    document.getElementById('office2FixedSeats').value = officeData.office2.fixedSeats || 0;
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('office1Date').value = today;
