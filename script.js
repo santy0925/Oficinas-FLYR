@@ -43,25 +43,36 @@ function updateStats() {
     const office1 = officeData.office1;
     const office2 = officeData.office2;
 
-    const totalSeats =
-        (office1.seats + (office1.fixedSeats || 0)) +
-        (office2.seats + (office2.fixedSeats || 0));
+    const rotativeSeats1 = office1.seats;
+    const rotativeSeats2 = office2.seats;
+    const fixedSeats1 = office1.fixedSeats || 0;
+    const fixedSeats2 = office2.fixedSeats || 0;
 
-    let occupiedSeats = 0;
+    const rotativeSeats = rotativeSeats1 + rotativeSeats2;
+    const fixedSeats = fixedSeats1 + fixedSeats2;
+    const totalSeats = rotativeSeats + fixedSeats;
+
+    let occupiedRotativeSeats = 0;
     let todayEquipmentCount = 0;
 
     [...office1.equipment, ...office2.equipment].forEach(equipment => {
-        if (equipment.date === today) {
+        if (equipment.date === today && equipment.status === 'presente') {
+            occupiedRotativeSeats += equipment.people || 0;
             todayEquipmentCount++;
-            if (equipment.status === 'presente') {
-                occupiedSeats += equipment.people || 0;
-            }
         }
     });
 
     document.getElementById('totalSeats').textContent = totalSeats;
-    document.getElementById('availableSeats').textContent = totalSeats - occupiedSeats;
+    document.getElementById('fixedSeats').textContent = fixedSeats;
+    document.getElementById('rotativeSeats').textContent = rotativeSeats;
+    document.getElementById('availableSeats').textContent = Math.max(rotativeSeats - occupiedRotativeSeats, 0);
     document.getElementById('todayEquipment').textContent = todayEquipmentCount;
+
+    // Mostrar por oficina
+    document.getElementById('fixedSeats1').textContent = fixedSeats1;
+    document.getElementById('fixedSeats2').textContent = fixedSeats2;
+    document.getElementById('rotativeSeats1').textContent = rotativeSeats1;
+    document.getElementById('rotativeSeats2').textContent = rotativeSeats2;
 }
 
 function updateSeats(officeNum) {

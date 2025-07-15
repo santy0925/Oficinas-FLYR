@@ -39,7 +39,7 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
     padding: 30px;
     background: #f8f9fa;
@@ -52,6 +52,7 @@ body {
     text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    min-width: 200px;
 }
 
 .stat-card:hover {
@@ -68,6 +69,7 @@ body {
     color: #666;
     font-size: 1.1em;
     margin-top: 5px;
+    word-wrap: break-word;
 }
 
 .main-content {
@@ -84,20 +86,25 @@ body {
 
 .office-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
 .office-title {
     font-size: 1.8em;
     color: #333;
+    flex: 1;
+    min-width: 200px;
 }
 
 .fixed-seats {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 .fixed-seats label {
     font-weight: bold;
@@ -111,16 +118,6 @@ body {
     text-align: center;
     font-size: 1.1em;
 }
-.fixed-seats input {
-    width: 80px;
-    padding: 8px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.1em;
-}
-
-
 
 .equipment-grid {
     display: grid;
@@ -237,23 +234,25 @@ body {
     overflow-x: auto;
 }
 
-@media (max-width: 768px) {
+/* Responsive: tablets */
+@media (max-width: 992px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    .equipment-grid {
-        grid-template-columns: 1fr;
-    }
     .office-header {
         flex-direction: column;
-        gap: 15px;
+        align-items: flex-start;
     }
-    
+}
+
+/* Responsive: móviles */
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
     .equipment-grid {
         grid-template-columns: 1fr;
     }
-}
-@media (max-width: 480px) {
     .header h1 {
         font-size: 2em;
     }

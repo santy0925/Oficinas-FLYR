@@ -13,6 +13,7 @@
         <div class="date-display" id="currentDate"></div>
     </div>
 
+    <!-- Sección de estadísticas -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-number" id="totalOffices">2</div>
@@ -20,7 +21,15 @@
         </div>
         <div class="stat-card">
             <div class="stat-number" id="totalSeats">0</div>
-            <div class="stat-label">Total Asientos</div>
+            <div class="stat-label">Total Asientos (Fijos + Rotativos)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="fixedSeats">0</div>
+            <div class="stat-label">Puestos Fijos: <span id="fixedSeats1">0</span> / <span id="fixedSeats2">0</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="rotativeSeats">0</div>
+            <div class="stat-label">Puestos Rotativos: <span id="rotativeSeats1">0</span> / <span id="rotativeSeats2">0</span></div>
         </div>
         <div class="stat-card">
             <div class="stat-number" id="availableSeats">0</div>
@@ -60,6 +69,7 @@
 
             <div class="add-equipment-form">
                 <h3>➕ Agregar Nuevo Equipo</h3>
+                <br>
                 <div class="form-group">
                     <label>Nombre del Equipo:</label>
                     <input type="text" id="office1Name" placeholder="Ej: ...">
@@ -101,6 +111,7 @@
 
             <div class="add-equipment-form">
                 <h3>➕ Agregar Nuevo Equipo</h3>
+                <br>
                 <div class="form-group">
                     <label>Nombre del Equipo:</label>
                     <input type="text" id="office2Name" placeholder="Ej: ...">
