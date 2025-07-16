@@ -68,7 +68,6 @@ function updateStats() {
     document.getElementById('availableSeats').textContent = Math.max(rotativeSeats - occupiedRotativeSeats, 0);
     document.getElementById('todayEquipment').textContent = todayEquipmentCount;
 
-    // Mostrar por oficina
     document.getElementById('fixedSeats1').textContent = fixedSeats1;
     document.getElementById('fixedSeats2').textContent = fixedSeats2;
     document.getElementById('rotativeSeats1').textContent = rotativeSeats1;
@@ -126,6 +125,84 @@ function renderTodayEquipment() {
         `;
         container.appendChild(card);
     });
+}
+
+function renderAdjacentDayEquipment() {
+    const today = new Date();
+    const yesterday = new Date(today);
+    const tomorrow = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const formatDate = date => date.toISOString().split('T')[0];
+    const yesterdayStr = formatDate(yesterday);
+    const tomorrowStr = formatDate(tomorrow);
+
+    const yesterdayContainer = document.getElementById('yesterdayEquipmentList');
+    const tomorrowContainer = document.getElementById('tomorrowEquipmentList');
+    const yesterdayCount = document.getElementById('yesterdayCount');
+    const tomorrowCount = document.getElementById('tomorrowCount');
+    const yesterdayPeople = document.getElementById('yesterdayPeople');
+    const tomorrowPeople = document.getElementById('tomorrowPeople');
+
+    yesterdayContainer.innerHTML = '';
+    tomorrowContainer.innerHTML = '';
+
+    const yesterdayEquipments = [];
+    const tomorrowEquipments = [];
+
+    let totalYesterdayPeople = 0;
+    let totalTomorrowPeople = 0;
+
+    [1, 2].forEach(officeNum => {
+        officeData[`office${officeNum}`].equipment.forEach(item => {
+            if (item.date === yesterdayStr) {
+                yesterdayEquipments.push({ ...item, office: officeNum });
+                totalYesterdayPeople += item.people || 0;
+            }
+            if (item.date === tomorrowStr) {
+                tomorrowEquipments.push({ ...item, office: officeNum });
+                totalTomorrowPeople += item.people || 0;
+            }
+        });
+    });
+
+    const renderCard = (item, label) => {
+        const card = document.createElement('div');
+        card.className = 'equipment-card';
+        card.innerHTML = `
+            <div class="equipment-header">
+                <div class="equipment-name">${item.name}</div>
+                <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
+            </div>
+            <div class="status-badge status-${item.status}">
+                ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
+            </div>
+            ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
+            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${label}</div>
+        `;
+        return card;
+    };
+
+    yesterdayCount.textContent = yesterdayEquipments.length;
+    yesterdayPeople.textContent = totalYesterdayPeople;
+    if (yesterdayEquipments.length === 0) {
+        yesterdayContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hubo equipos ayer</div>';
+    } else {
+        yesterdayEquipments.forEach(item => {
+            yesterdayContainer.appendChild(renderCard(item, 'Ayer'));
+        });
+    }
+
+    tomorrowCount.textContent = tomorrowEquipments.length;
+    tomorrowPeople.textContent = totalTomorrowPeople;
+    if (tomorrowEquipments.length === 0) {
+        tomorrowContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hay equipos programados para mañana</div>';
+    } else {
+        tomorrowEquipments.forEach(item => {
+            tomorrowContainer.appendChild(renderCard(item, 'Mañana'));
+        });
+    }
 }
 
 function renderOfficeEquipment(officeNum) {
@@ -197,6 +274,7 @@ function addEquipment(officeNum) {
     renderOfficeEquipment(officeNum);
     renderTodayEquipment();
     updateStats();
+    renderAdjacentDayEquipment();
 }
 
 function deleteEquipment(officeNum, equipmentId) {
@@ -206,6 +284,7 @@ function deleteEquipment(officeNum, equipmentId) {
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
         updateStats();
+        renderAdjacentDayEquipment();
     }
 }
 
@@ -217,6 +296,7 @@ function updateEquipmentDate(officeNum, equipmentId, newDate) {
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
         updateStats();
+        renderAdjacentDayEquipment();
     }
 }
 
@@ -228,6 +308,7 @@ function updateEquipmentStatus(officeNum, equipmentId, newStatus) {
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
         updateStats();
+        renderAdjacentDayEquipment();
     }
 }
 
@@ -239,6 +320,7 @@ function updateEquipmentPeople(officeNum, equipmentId, newPeople) {
         renderOfficeEquipment(officeNum);
         renderTodayEquipment();
         updateStats();
+        renderAdjacentDayEquipment();
     }
 }
 
@@ -258,6 +340,7 @@ function init() {
     renderOfficeEquipment(1);
     renderOfficeEquipment(2);
     renderTodayEquipment();
+    renderAdjacentDayEquipment();
     updateStats();
 }
 
