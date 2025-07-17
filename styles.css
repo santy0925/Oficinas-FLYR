@@ -234,6 +234,46 @@ body {
     overflow-x: auto;
 }
 
+.company-teams-section {
+    background: #eef6fd;
+    padding: 20px;
+    margin: 20px 0;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+}
+
+.company-teams-section h2 {
+    color: #2c3e50;
+    padding-bottom: 15px;
+}
+
+.company-team {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    background: #eaf4fc;
+    border: 1px solid #b3d9f7;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.company-team input {
+    padding: 4px;
+    border-radius: 3px;
+}
+
+.company-team button {
+    background: #ff0000;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 /* Responsive: tablets */
 @media (max-width: 992px) {
     .stats-grid {

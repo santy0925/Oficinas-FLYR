@@ -374,4 +374,75 @@ function init() {
     updateStats();
 }
 
+
+let companyTeams = JSON.parse(localStorage.getItem("companyTeams")) || [];
+
+function saveCompanyTeams() {
+    localStorage.setItem("companyTeams", JSON.stringify(companyTeams));
+}
+
+function renderCompanyTeams() {
+    const container = document.getElementById("companyTeamsList");
+    container.innerHTML = "";
+
+    companyTeams.forEach((team, index) => {
+        const div = document.createElement("div");
+        div.className = "company-team";
+
+        const nameInput = document.createElement("input");
+        nameInput.value = team.name;
+        nameInput.oninput = () => {
+            companyTeams[index].name = nameInput.value;
+            saveCompanyTeams();
+        };
+
+        const daysInput = document.createElement("input");
+        daysInput.value = team.days;
+        daysInput.oninput = () => {
+            companyTeams[index].days = daysInput.value;
+            saveCompanyTeams();
+        };
+
+        const peopleInput = document.createElement("input");
+        peopleInput.type = "number";
+        peopleInput.min = "1";
+        peopleInput.value = team.people;
+        peopleInput.oninput = () => {
+            companyTeams[index].people = parseInt(peopleInput.value);
+            saveCompanyTeams();
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "❌";
+        deleteBtn.onclick = () => {
+            companyTeams.splice(index, 1);
+            saveCompanyTeams();
+            renderCompanyTeams();
+        };
+
+        div.append("Equipo:", nameInput, " Días:", daysInput, " Personas:", peopleInput, deleteBtn);
+        container.appendChild(div);
+    });
+}
+
+function addCompanyTeam() {
+    const name = document.getElementById("companyName").value.trim();
+    const days = document.getElementById("companyDays").value.trim();
+    const people = parseInt(document.getElementById("companyPeople").value);
+
+    if (name && days && people > 0) {
+        companyTeams.push({ name, days, people });
+        saveCompanyTeams();
+        renderCompanyTeams();
+
+        // Limpiar campos
+        document.getElementById("companyName").value = "";
+        document.getElementById("companyDays").value = "";
+        document.getElementById("companyPeople").value = "1";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", renderCompanyTeams);
+
 window.onload = init;
+
