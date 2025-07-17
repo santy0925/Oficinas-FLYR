@@ -129,45 +129,34 @@ function renderTodayEquipment() {
 
 function renderAdjacentDayEquipment() {
     const today = new Date();
-    const yesterday = new Date(today);
-    const tomorrow = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    tomorrow.setDate(today.getDate() + 1);
-
-    const formatDate = date => date.toISOString().split('T')[0];
-    const yesterdayStr = formatDate(yesterday);
-    const tomorrowStr = formatDate(tomorrow);
-
     const yesterdayContainer = document.getElementById('yesterdayEquipmentList');
-    const tomorrowContainer = document.getElementById('tomorrowEquipmentList');
     const yesterdayCount = document.getElementById('yesterdayCount');
-    const tomorrowCount = document.getElementById('tomorrowCount');
     const yesterdayPeople = document.getElementById('yesterdayPeople');
-    const tomorrowPeople = document.getElementById('tomorrowPeople');
 
     yesterdayContainer.innerHTML = '';
-    tomorrowContainer.innerHTML = '';
 
-    const yesterdayEquipments = [];
-    const tomorrowEquipments = [];
+    const previousEquipments = [];
+    let totalPreviousPeople = 0;
 
-    let totalYesterdayPeople = 0;
-    let totalTomorrowPeople = 0;
+    const formatDate = date => date.toISOString().split('T')[0];
 
-    [1, 2].forEach(officeNum => {
-        officeData[`office${officeNum}`].equipment.forEach(item => {
-            if (item.date === yesterdayStr) {
-                yesterdayEquipments.push({ ...item, office: officeNum });
-                totalYesterdayPeople += item.people || 0;
-            }
-            if (item.date === tomorrowStr) {
-                tomorrowEquipments.push({ ...item, office: officeNum });
-                totalTomorrowPeople += item.people || 0;
-            }
+    // Últimos 10 días anteriores a hoy
+    for (let i = 1; i <= 10; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const dateStr = formatDate(date);
+
+        [1, 2].forEach(officeNum => {
+            officeData[`office${officeNum}`].equipment.forEach(item => {
+                if (item.date === dateStr) {
+                    previousEquipments.push({ ...item, office: officeNum, label: `Hace ${i} día${i > 1 ? 's' : ''}` });
+                    totalPreviousPeople += item.people || 0;
+                }
+            });
         });
-    });
+    }
 
-    const renderCard = (item, label) => {
+    const renderCard = (item) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
         card.innerHTML = `
@@ -179,28 +168,69 @@ function renderAdjacentDayEquipment() {
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${label}</div>
+            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${item.label}</div>
         `;
         return card;
     };
 
-    yesterdayCount.textContent = yesterdayEquipments.length;
-    yesterdayPeople.textContent = totalYesterdayPeople;
-    if (yesterdayEquipments.length === 0) {
-        yesterdayContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hubo equipos ayer</div>';
+    yesterdayCount.textContent = previousEquipments.length;
+    yesterdayPeople.textContent = totalPreviousPeople;
+
+    if (previousEquipments.length === 0) {
+        yesterdayContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hubo equipos en los últimos días</div>';
     } else {
-        yesterdayEquipments.forEach(item => {
-            yesterdayContainer.appendChild(renderCard(item, 'Ayer'));
+        previousEquipments.forEach(item => {
+            yesterdayContainer.appendChild(renderCard(item));
         });
     }
 
+    // "Mañana"
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const tomorrowStr = formatDate(tomorrow);
+
+    const tomorrowContainer = document.getElementById('tomorrowEquipmentList');
+    const tomorrowCount = document.getElementById('tomorrowCount');
+    const tomorrowPeople = document.getElementById('tomorrowPeople');
+
+    tomorrowContainer.innerHTML = '';
+    const tomorrowEquipments = [];
+    let totalTomorrowPeople = 0;
+
+    [1, 2].forEach(officeNum => {
+        officeData[`office${officeNum}`].equipment.forEach(item => {
+            if (item.date === tomorrowStr) {
+                tomorrowEquipments.push({ ...item, office: officeNum });
+                totalTomorrowPeople += item.people || 0;
+            }
+        });
+    });
+
+    const renderTomorrowCard = (item) => {
+        const card = document.createElement('div');
+        card.className = 'equipment-card';
+        card.innerHTML = `
+            <div class="equipment-header">
+                <div class="equipment-name">${item.name}</div>
+                <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
+            </div>
+            <div class="status-badge status-${item.status}">
+                ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
+            </div>
+            ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
+            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 Mañana</div>
+        `;
+        return card;
+    };
+
     tomorrowCount.textContent = tomorrowEquipments.length;
     tomorrowPeople.textContent = totalTomorrowPeople;
+
     if (tomorrowEquipments.length === 0) {
         tomorrowContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hay equipos programados para mañana</div>';
     } else {
         tomorrowEquipments.forEach(item => {
-            tomorrowContainer.appendChild(renderCard(item, 'Mañana'));
+            tomorrowContainer.appendChild(renderTomorrowCard(item));
         });
     }
 }
