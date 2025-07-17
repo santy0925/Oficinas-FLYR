@@ -442,6 +442,8 @@ function addCompanyTeam() {
     }
 }
 
+
+
 document.addEventListener("DOMContentLoaded", renderCompanyTeams);
 
 window.onload = init;
