@@ -184,29 +184,33 @@ function renderAdjacentDayEquipment() {
         });
     }
 
-    // "Mañana"
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    const tomorrowStr = formatDate(tomorrow);
+    // "Próximos días" - Próximos 10 días futuros
+    const nextDaysContainer = document.getElementById('tomorrowEquipmentList');
+    const nextDaysCount = document.getElementById('tomorrowCount');
+    const nextDaysPeople = document.getElementById('tomorrowPeople');
 
-    const tomorrowContainer = document.getElementById('tomorrowEquipmentList');
-    const tomorrowCount = document.getElementById('tomorrowCount');
-    const tomorrowPeople = document.getElementById('tomorrowPeople');
+    nextDaysContainer.innerHTML = '';
+    const nextDaysEquipments = [];
+    let totalNextDaysPeople = 0;
 
-    tomorrowContainer.innerHTML = '';
-    const tomorrowEquipments = [];
-    let totalTomorrowPeople = 0;
+    // Próximos 10 días futuros (desde mañana hasta 10 días después)
+    for (let i = 1; i <= 10; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dateStr = formatDate(date);
 
-    [1, 2].forEach(officeNum => {
-        officeData[`office${officeNum}`].equipment.forEach(item => {
-            if (item.date === tomorrowStr) {
-                tomorrowEquipments.push({ ...item, office: officeNum });
-                totalTomorrowPeople += item.people || 0;
-            }
+        [1, 2].forEach(officeNum => {
+            officeData[`office${officeNum}`].equipment.forEach(item => {
+                if (item.date === dateStr) {
+                    const dayLabel = i === 1 ? 'Mañana' : `En ${i} días`;
+                    nextDaysEquipments.push({ ...item, office: officeNum, label: dayLabel, daysFromToday: i });
+                    totalNextDaysPeople += item.people || 0;
+                }
+            });
         });
-    });
+    }
 
-    const renderTomorrowCard = (item) => {
+    const renderNextDaysCard = (item) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
         card.innerHTML = `
@@ -218,19 +222,21 @@ function renderAdjacentDayEquipment() {
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 Mañana</div>
+            <div style="margin-top: 10px; color: #3498db; font-weight: bold;">📅 ${item.label}</div>
         `;
         return card;
     };
 
-    tomorrowCount.textContent = tomorrowEquipments.length;
-    tomorrowPeople.textContent = totalTomorrowPeople;
+    nextDaysCount.textContent = nextDaysEquipments.length;
+    nextDaysPeople.textContent = totalNextDaysPeople;
 
-    if (tomorrowEquipments.length === 0) {
-        tomorrowContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hay equipos programados para mañana</div>';
+    if (nextDaysEquipments.length === 0) {
+        nextDaysContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hay equipos programados para los próximos días</div>';
     } else {
-        tomorrowEquipments.forEach(item => {
-            tomorrowContainer.appendChild(renderTomorrowCard(item));
+        // Ordenar por días desde hoy para mostrar primero los más cercanos
+        nextDaysEquipments.sort((a, b) => a.daysFromToday - b.daysFromToday);
+        nextDaysEquipments.forEach(item => {
+            nextDaysContainer.appendChild(renderNextDaysCard(item));
         });
     }
 }
@@ -357,6 +363,7 @@ function updateEquipmentPeople(officeNum, equipmentId, newPeople) {
 function init() {
     loadData();
     updateCurrentDate();
+    
 
     document.getElementById('office1Seats').value = officeData.office1.seats;
     document.getElementById('office2Seats').value = officeData.office2.seats;
@@ -447,4 +454,3 @@ function addCompanyTeam() {
 document.addEventListener("DOMContentLoaded", renderCompanyTeams);
 
 window.onload = init;
-
