@@ -454,3 +454,14 @@ function addCompanyTeam() {
 document.addEventListener("DOMContentLoaded", renderCompanyTeams);
 
 window.onload = init;
+function renderCard(item) {
+        const card = document.createElement('div');
+        card.className = 'equipment-card';
+        card.innerHTML = `
+            <div class="equipment-header">
+                <div class="equipment-name">${item.name}</div>
+                <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
+            </div>
+            <div class="status-badge status-${item.status}">
+                ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
+            </div>
