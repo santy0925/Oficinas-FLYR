@@ -262,12 +262,13 @@ body {
 .company-team input {
     padding: 4px;
     border-radius: 3px;
+    width: 270px;
 }
 
 .company-team button {
     background: #ffffff;
     color: rgb(255, 0, 0);
-    border: none;
+    border: 1px solid #ff0000;
     padding: 6px 10px;
     border-radius: 5px;
     cursor: pointer;
