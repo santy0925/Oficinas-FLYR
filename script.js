@@ -454,14 +454,50 @@ function addCompanyTeam() {
 document.addEventListener("DOMContentLoaded", renderCompanyTeams);
 
 window.onload = init;
-function renderCard(item) {
-        const card = document.createElement('div');
-        card.className = 'equipment-card';
-        card.innerHTML = `
-            <div class="equipment-header">
-                <div class="equipment-name">${item.name}</div>
-                <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
-            </div>
-            <div class="status-badge status-${item.status}">
-                ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
-            </div>
+
+function renderCompanyTeams() {
+    const container = document.getElementById("companyTeamsList");
+    container.innerHTML = "";
+
+    companyTeams.forEach((team, index) => {
+        const div = document.createElement("div");
+        div.className = "company-team";
+
+        const nameInput = document.createElement("input");
+        nameInput.value = team.name;
+        nameInput.oninput = () => {
+            companyTeams[index].name = nameInput.value;
+            saveCompanyTeams();
+        };
+
+        const daysInput = document.createElement("input");
+        daysInput.value = team.days;
+        daysInput.oninput = () => {
+            companyTeams[index].days = daysInput.value;
+            saveCompanyTeams();
+        };
+
+        const peopleInput = document.createElement("input");
+        peopleInput.type = "number";
+        peopleInput.min = "1";
+        peopleInput.value = team.people;
+        peopleInput.oninput = () => {
+            companyTeams[index].people = parseInt(peopleInput.value);
+            saveCompanyTeams();
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "❌";
+        deleteBtn.onclick = () => {
+            const confirmDelete = confirm("🗑️ ¿Deseas eliminar este equipo?\n\nEsta acción no se puede deshacer.");
+            if (confirmDelete) {
+                companyTeams.splice(index, 1);
+                saveCompanyTeams();
+                renderCompanyTeams();
+            }
+        };
+
+        div.append("Equipo:", nameInput, " Días:", daysInput, " Personas:", peopleInput, deleteBtn);
+        container.appendChild(div);
+    });
+}
