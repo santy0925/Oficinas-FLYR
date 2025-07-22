@@ -12,7 +12,6 @@ let officeData = {
         equipment: []
     }
 };
-
 let equipmentIdCounter = 1;
 
 function loadData() {
@@ -25,19 +24,16 @@ function loadData() {
         equipmentIdCounter = parseInt(savedCounter);
     }
 }
-
 function saveData() {
     localStorage.setItem('officeData', JSON.stringify(officeData));
     localStorage.setItem('equipmentIdCounter', equipmentIdCounter.toString());
 }
-
 function updateCurrentDate() {
     const today = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').textContent =
         today.toLocaleDateString('es-ES', options);
 }
-
 function updateStats() {
     const today = new Date().toISOString().split('T')[0];
     const office1 = officeData.office1;
@@ -46,7 +42,7 @@ function updateStats() {
     const rotativeSeats1 = office1.seats;
     const rotativeSeats2 = office2.seats;
     const fixedSeats1 = office1.fixedSeats || 0;
-    const fixedSeats2 = office2.fixedSeats || 0;
+    const fixedSeats2 = office2.fixedSeats || 0;    
 
     const rotativeSeats = rotativeSeats1 + rotativeSeats2;
     const fixedSeats = fixedSeats1 + fixedSeats2;
@@ -54,14 +50,12 @@ function updateStats() {
 
     let occupiedRotativeSeats = 0;
     let todayEquipmentCount = 0;
-
     [...office1.equipment, ...office2.equipment].forEach(equipment => {
         if (equipment.date === today && equipment.status === 'presente') {
             occupiedRotativeSeats += equipment.people || 0;
             todayEquipmentCount++;
         }
     });
-
     document.getElementById('totalSeats').textContent = totalSeats;
     document.getElementById('fixedSeats').textContent = fixedSeats;
     document.getElementById('rotativeSeats').textContent = rotativeSeats;
@@ -73,42 +67,40 @@ function updateStats() {
     document.getElementById('rotativeSeats1').textContent = rotativeSeats1;
     document.getElementById('rotativeSeats2').textContent = rotativeSeats2;
 }
-
 function updateSeats(officeNum) {
     const seats = parseInt(document.getElementById(`office${officeNum}Seats`).value) || 0;
     officeData[`office${officeNum}`].seats = seats;
     saveData();
     updateStats();
 }
-
+     
 function updateFixedSeats(officeNum) {
     const fixedSeats = parseInt(document.getElementById(`office${officeNum}FixedSeats`).value) || 0;
     officeData[`office${officeNum}`].fixedSeats = fixedSeats;
     saveData();
     updateStats();
 }
-
 function renderTodayEquipment() {
     const today = new Date().toISOString().split('T')[0];
     const container = document.getElementById('todayEquipmentList');
     const todayEquipments = [];
-
+    let totalTodayPeople = 0;
     [1, 2].forEach(officeNum => {
         officeData[`office${officeNum}`].equipment.forEach(item => {
             if (item.date === today) {
                 todayEquipments.push({ ...item, office: officeNum });
+                totalTodayPeople += item.people || 0;
             }
         });
     });
-
     document.getElementById('todayEquipmentDetail').textContent = todayEquipments.length;
+    document.getElementById('todayPeople').textContent = totalTodayPeople;
     container.innerHTML = '';
 
     if (todayEquipments.length === 0) {
         container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hay equipos programados para hoy</div>';
         return;
     }
-
     todayEquipments.forEach(item => {
         const card = document.createElement('div');
         card.className = 'equipment-card today-equipment';
@@ -126,7 +118,6 @@ function renderTodayEquipment() {
         container.appendChild(card);
     });
 }
-
 function renderAdjacentDayEquipment() {
     const today = new Date();
     const yesterdayContainer = document.getElementById('yesterdayEquipmentList');
@@ -137,15 +128,12 @@ function renderAdjacentDayEquipment() {
 
     const previousEquipments = [];
     let totalPreviousPeople = 0;
-
     const formatDate = date => date.toISOString().split('T')[0];
 
-    // Últimos 10 días anteriores a hoy
     for (let i = 1; i <= 10; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() - i);
         const dateStr = formatDate(date);
-
         [1, 2].forEach(officeNum => {
             officeData[`office${officeNum}`].equipment.forEach(item => {
                 if (item.date === dateStr) {
@@ -155,7 +143,6 @@ function renderAdjacentDayEquipment() {
             });
         });
     }
-
     const renderCard = (item) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
@@ -172,7 +159,6 @@ function renderAdjacentDayEquipment() {
         `;
         return card;
     };
-
     yesterdayCount.textContent = previousEquipments.length;
     yesterdayPeople.textContent = totalPreviousPeople;
 
@@ -184,7 +170,6 @@ function renderAdjacentDayEquipment() {
         });
     }
 
-    // "Próximos días" - Próximos 10 días futuros
     const nextDaysContainer = document.getElementById('tomorrowEquipmentList');
     const nextDaysCount = document.getElementById('tomorrowCount');
     const nextDaysPeople = document.getElementById('tomorrowPeople');
@@ -193,7 +178,6 @@ function renderAdjacentDayEquipment() {
     const nextDaysEquipments = [];
     let totalNextDaysPeople = 0;
 
-    // Próximos 10 días futuros (desde mañana hasta 10 días después)
     for (let i = 1; i <= 10; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
@@ -209,7 +193,6 @@ function renderAdjacentDayEquipment() {
             });
         });
     }
-
     const renderNextDaysCard = (item) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
@@ -226,27 +209,23 @@ function renderAdjacentDayEquipment() {
         `;
         return card;
     };
-
     nextDaysCount.textContent = nextDaysEquipments.length;
     nextDaysPeople.textContent = totalNextDaysPeople;
 
     if (nextDaysEquipments.length === 0) {
         nextDaysContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No hay equipos programados para los próximos días</div>';
     } else {
-        // Ordenar por días desde hoy para mostrar primero los más cercanos
         nextDaysEquipments.sort((a, b) => a.daysFromToday - b.daysFromToday);
         nextDaysEquipments.forEach(item => {
             nextDaysContainer.appendChild(renderNextDaysCard(item));
         });
     }
 }
-
 function renderOfficeEquipment(officeNum) {
     const today = new Date().toISOString().split('T')[0];
     const equipment = officeData[`office${officeNum}`].equipment;
     const container = document.getElementById(`office${officeNum}Equipment`);
     container.innerHTML = '';
-
     equipment.forEach(item => {
         const isToday = item.date === today;
         const card = document.createElement('div');
@@ -279,18 +258,15 @@ function renderOfficeEquipment(officeNum) {
         container.appendChild(card);
     });
 }
-
 function addEquipment(officeNum) {
     const name = document.getElementById(`office${officeNum}Name`).value.trim();
     const date = document.getElementById(`office${officeNum}Date`).value;
     const status = document.getElementById(`office${officeNum}Status`).value;
     const people = parseInt(document.getElementById(`office${officeNum}People`).value) || 0;
-
     if (!name || !date) {
         alert('Por favor, completa los campos de Nombre y Fecha.');
         return;
     }
-
     const newEquipment = {
         id: equipmentIdCounter++,
         name,
@@ -298,7 +274,6 @@ function addEquipment(officeNum) {
         status,
         people
     };
-
     officeData[`office${officeNum}`].equipment.push(newEquipment);
 
     document.getElementById(`office${officeNum}Name`).value = '';
@@ -312,7 +287,6 @@ function addEquipment(officeNum) {
     updateStats();
     renderAdjacentDayEquipment();
 }
-
 function deleteEquipment(officeNum, equipmentId) {
     if (confirm('¿Estás seguro de que quieres eliminar este equipo?')) {
         officeData[`office${officeNum}`].equipment = officeData[`office${officeNum}`].equipment.filter(item => item.id !== equipmentId);
@@ -323,7 +297,6 @@ function deleteEquipment(officeNum, equipmentId) {
         renderAdjacentDayEquipment();
     }
 }
-
 function updateEquipmentDate(officeNum, equipmentId, newDate) {
     const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
     if (equipment) {
@@ -335,7 +308,6 @@ function updateEquipmentDate(officeNum, equipmentId, newDate) {
         renderAdjacentDayEquipment();
     }
 }
-
 function updateEquipmentStatus(officeNum, equipmentId, newStatus) {
     const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
     if (equipment) {
@@ -347,7 +319,6 @@ function updateEquipmentStatus(officeNum, equipmentId, newStatus) {
         renderAdjacentDayEquipment();
     }
 }
-
 function updateEquipmentPeople(officeNum, equipmentId, newPeople) {
     const equipment = officeData[`office${officeNum}`].equipment.find(item => item.id === equipmentId);
     if (equipment) {
@@ -422,9 +393,12 @@ function renderCompanyTeams() {
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "❌";
         deleteBtn.onclick = () => {
-            companyTeams.splice(index, 1);
-            saveCompanyTeams();
-            renderCompanyTeams();
+            const confirmDelete = confirm("🗑️ ¿Deseas eliminar este equipo?\n\nEsta acción no se puede deshacer.");
+            if (confirmDelete) {
+                companyTeams.splice(index, 1);
+                saveCompanyTeams();
+                renderCompanyTeams();
+            }
         };
 
         div.append("Equipo:", nameInput, " Días:", daysInput, " Personas:", peopleInput, deleteBtn);
@@ -442,7 +416,6 @@ function addCompanyTeam() {
         saveCompanyTeams();
         renderCompanyTeams();
 
-        // Limpiar campos
         document.getElementById("companyName").value = "";
         document.getElementById("companyDays").value = "";
         document.getElementById("companyPeople").value = "1";
@@ -450,54 +423,6 @@ function addCompanyTeam() {
 }
 
 
-
 document.addEventListener("DOMContentLoaded", renderCompanyTeams);
 
 window.onload = init;
-
-function renderCompanyTeams() {
-    const container = document.getElementById("companyTeamsList");
-    container.innerHTML = "";
-
-    companyTeams.forEach((team, index) => {
-        const div = document.createElement("div");
-        div.className = "company-team";
-
-        const nameInput = document.createElement("input");
-        nameInput.value = team.name;
-        nameInput.oninput = () => {
-            companyTeams[index].name = nameInput.value;
-            saveCompanyTeams();
-        };
-
-        const daysInput = document.createElement("input");
-        daysInput.value = team.days;
-        daysInput.oninput = () => {
-            companyTeams[index].days = daysInput.value;
-            saveCompanyTeams();
-        };
-
-        const peopleInput = document.createElement("input");
-        peopleInput.type = "number";
-        peopleInput.min = "1";
-        peopleInput.value = team.people;
-        peopleInput.oninput = () => {
-            companyTeams[index].people = parseInt(peopleInput.value);
-            saveCompanyTeams();
-        };
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "❌";
-        deleteBtn.onclick = () => {
-            const confirmDelete = confirm("🗑️ ¿Deseas eliminar este equipo?\n\nEsta acción no se puede deshacer.");
-            if (confirmDelete) {
-                companyTeams.splice(index, 1);
-                saveCompanyTeams();
-                renderCompanyTeams();
-            }
-        };
-
-        div.append("Equipo:", nameInput, " Días:", daysInput, " Personas:", peopleInput, deleteBtn);
-        container.appendChild(div);
-    });
-}
