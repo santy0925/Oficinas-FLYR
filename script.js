@@ -1,4 +1,5 @@
-const today = new Date().toISOString().split('T')[0];
+const today = new Date(); // Get the current date in local time
+const todayISO = today.toISOString().split('T')[0]; // For comparisons in YYYY-MM-DD format
 
 let officeData = {
     office1: {
@@ -29,13 +30,13 @@ function saveData() {
     localStorage.setItem('equipmentIdCounter', equipmentIdCounter.toString());
 }
 function updateCurrentDate() {
-    const today = new Date();
+    const today = new Date(); // Ensure this is the local date
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').textContent =
         today.toLocaleDateString('es-ES', options);
 }
 function updateStats() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0]; // This is still UTC based for comparisons
     const office1 = officeData.office1;
     const office2 = officeData.office2;
 
@@ -50,7 +51,9 @@ function updateStats() {
 
     let occupiedRotativeSeats = 0;
     let todayEquipmentCount = 0;
+    // Itera a través de todo el equipo de ambas oficinas
     [...office1.equipment, ...office2.equipment].forEach(equipment => {
+        // Considera solo el equipo programado para hoy y marcado como 'presente'
         if (equipment.date === today && equipment.status === 'presente') {
             occupiedRotativeSeats += equipment.people || 0;
             todayEquipmentCount++;
@@ -59,7 +62,9 @@ function updateStats() {
     document.getElementById('totalSeats').textContent = totalSeats;
     document.getElementById('fixedSeats').textContent = fixedSeats;
     document.getElementById('rotativeSeats').textContent = rotativeSeats;
+    // Calcula los puestos disponibles basándose únicamente en los puestos rotativos ocupados hoy
     document.getElementById('availableSeats').textContent = Math.max(rotativeSeats - occupiedRotativeSeats, 0);
+    // Muestra el recuento de equipos programados para hoy
     document.getElementById('todayEquipment').textContent = todayEquipmentCount;
 
     document.getElementById('fixedSeats1').textContent = fixedSeats1;
@@ -80,6 +85,15 @@ function updateFixedSeats(officeNum) {
     saveData();
     updateStats();
 }
+
+// Helper function to get day of the week
+function getDayOfWeek(dateString) {
+    // Ensure the date is parsed as local date to avoid timezone issues
+    const date = new Date(dateString + 'T00:00:00'); // Append T00:00:00 to force local interpretation
+    const options = { weekday: 'long' };
+    return date.toLocaleDateString('es-ES', options);
+}
+
 function renderTodayEquipment() {
     const today = new Date().toISOString().split('T')[0];
     const container = document.getElementById('todayEquipmentList');
@@ -104,6 +118,7 @@ function renderTodayEquipment() {
     todayEquipments.forEach(item => {
         const card = document.createElement('div');
         card.className = 'equipment-card today-equipment';
+        const dayOfWeek = getDayOfWeek(item.date);
         card.innerHTML = `
             <div class="equipment-header">
                 <div class="equipment-name">${item.name}</div>
@@ -113,7 +128,7 @@ function renderTodayEquipment() {
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">📅 Programado para hoy</div>
+            <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">📅 ${item.date} (${dayOfWeek})</div>
         `;
         container.appendChild(card);
     });
@@ -146,6 +161,7 @@ function renderAdjacentDayEquipment() {
     const renderCard = (item) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
+        const dayOfWeek = getDayOfWeek(item.date);
         card.innerHTML = `
             <div class="equipment-header">
                 <div class="equipment-name">${item.name}</div>
@@ -155,7 +171,7 @@ function renderAdjacentDayEquipment() {
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${item.label}</div>
+            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${item.date} (${dayOfWeek}) - ${item.label}</div>
         `;
         return card;
     };
@@ -196,6 +212,7 @@ function renderAdjacentDayEquipment() {
     const renderNextDaysCard = (item) => {
         const card = document.createElement('div');
         card.className = 'equipment-card';
+        const dayOfWeek = getDayOfWeek(item.date);
         card.innerHTML = `
             <div class="equipment-header">
                 <div class="equipment-name">${item.name}</div>
@@ -205,7 +222,7 @@ function renderAdjacentDayEquipment() {
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #3498db; font-weight: bold;">📅 ${item.label}</div>
+            <div style="margin-top: 10px; color: #3498db; font-weight: bold;">📅 ${item.date} (${dayOfWeek}) - ${item.label}</div>
         `;
         return card;
     };
@@ -341,9 +358,15 @@ function init() {
     document.getElementById('office1FixedSeats').value = officeData.office1.fixedSeats || 0;
     document.getElementById('office2FixedSeats').value = officeData.office2.fixedSeats || 0;
 
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('office1Date').value = today;
-    document.getElementById('office2Date').value = today;
+    // Use the locally adjusted date for the input fields
+    const todayLocal = new Date();
+    const year = todayLocal.getFullYear();
+    const month = (todayLocal.getMonth() + 1).toString().padStart(2, '0');
+    const day = todayLocal.getDate().toString().padStart(2, '0');
+    const formattedToday = `${year}-${month}-${day}`;
+
+    document.getElementById('office1Date').value = formattedToday;
+    document.getElementById('office2Date').value = formattedToday;
 
     renderOfficeEquipment(1);
     renderOfficeEquipment(2);
@@ -397,7 +420,7 @@ function renderCompanyTeams() {
             if (confirmDelete) {
                 companyTeams.splice(index, 1);
                 saveCompanyTeams();
-                renderCompanyTeams();
+                renderCompanyTeams(); 
             }
         };
 
