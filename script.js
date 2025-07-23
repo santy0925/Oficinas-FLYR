@@ -135,6 +135,7 @@ function renderTodayEquipment() {
 }
 function renderAdjacentDayEquipment() {
     const today = new Date();
+    const todayISO = today.toISOString().split('T')[0]; // Current date for comparison
     const yesterdayContainer = document.getElementById('yesterdayEquipmentList');
     const yesterdayCount = document.getElementById('yesterdayCount');
     const yesterdayPeople = document.getElementById('yesterdayPeople');
@@ -167,8 +168,8 @@ function renderAdjacentDayEquipment() {
                 <div class="equipment-name">${item.name}</div>
                 <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
             </div>
-            <div class="status-badge status-${item.status}">
-                ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
+            <div class="status-badge status-absent">
+                ❌ Ausente
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
             <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${item.date} (${dayOfWeek}) - ${item.label}</div>
@@ -218,8 +219,8 @@ function renderAdjacentDayEquipment() {
                 <div class="equipment-name">${item.name}</div>
                 <span style="background: #667eea; color: white; padding: 5px 10px; border-radius: 10px; font-size: 0.9em;">Oficina ${item.office}</span>
             </div>
-            <div class="status-badge status-${item.status}">
-                ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
+            <div class="status-badge status-absent">
+                ❌ Ausente
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
             <div style="margin-top: 10px; color: #3498db; font-weight: bold;">📅 ${item.date} (${dayOfWeek}) - ${item.label}</div>
@@ -420,7 +421,7 @@ function renderCompanyTeams() {
             if (confirmDelete) {
                 companyTeams.splice(index, 1);
                 saveCompanyTeams();
-                renderCompanyTeams(); 
+                renderCompanyTeams();
             }
         };
 
