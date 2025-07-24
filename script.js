@@ -18,13 +18,12 @@ let officeData = {
     }
 };
 
-// Contador para los IDs únicos de equipos
+// Contador para los IDs únicos de equipos/grupos.
 let equipmentIdCounter = 1;
 
 /**
  * Carga los datos guardados de las oficinas y el contador de IDs de equipos desde el almacenamiento local.
- * Esto asegura la persistencia de los datos entre sesiones del navegador.
- */
+ * Esto asegura la persistencia de los datos entre sesiones del navegador.   */
 function loadData() {
     const saved = localStorage.getItem('officeData');
     if (saved) {
@@ -38,17 +37,13 @@ function loadData() {
 
 /**
  * Guarda los datos actuales de las oficinas y el contador de IDs de equipos en el almacenamiento local.
- * Los datos se convierten a una cadena JSON para su almacenamiento.
- */
+ * Los datos se convierten a una cadena JSON para su almacenamiento.*/
 function saveData() {
     localStorage.setItem('officeData', JSON.stringify(officeData));
     localStorage.setItem('equipmentIdCounter', equipmentIdCounter.toString());
 }
 
-/**
- * Actualiza la fecha actual mostrada en la página web.
- * La fecha se formatea para el idioma español.
- */
+/*** Actualiza la fecha actual mostrada en la página web. La fecha se formatea para el idioma español.*/
 function updateCurrentDate() {
     const today = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
