@@ -183,7 +183,7 @@ function renderTodayEquipment() {
                 ${item.status === 'presente' ? '✅ Presente' : '❌ Ausente'}
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">📅 ${item.date} (${dayOfWeek})</div>
+            <div style="margin-top: 10px; color: #27ae60; font-weight: bold;">${item.date} (${dayOfWeek})</div>
         `;
         container.appendChild(card);
     });
@@ -239,7 +239,7 @@ function renderAdjacentDayEquipment() {
                 ❌ Ausente
             </div>
             ${item.people ? `<div style="margin-top: 5px; font-size: 0.9em; color: #555;">👥 Personas: ${item.people}</div>` : ''}
-            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">📅 ${item.date} (${dayOfWeek}) - ${item.label}</div>
+            <div style="margin-top: 10px; color: #e67e22; font-weight: bold;">${item.date} (${dayOfWeek}) - ${item.label}</div>
         `;
         return card;
     };
